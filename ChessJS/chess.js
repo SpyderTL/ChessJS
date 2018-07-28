@@ -158,6 +158,43 @@ function getMoves(game) {
 
 					break;
 
+				case pieces.Queen:
+					var directions = [north(row, column), northeast(row, column), east(row, column), southeast(row, column), south(row, column), southwest(row, column), west(row, column), northwest(row, column)];
+
+					for (var d = 0; d < directions.length; d++) {
+						var positions = directions[d];
+
+						for (var p = 0; p < positions.length; p++) {
+							var destination = game.board[positions[p].row][positions[p].column];
+
+							if (destination == undefined ||
+								destination.color != position.color)
+								moves.push({ currentRow: row, currentColumn: column, row: positions[p].row, column: positions[p].column });
+							else
+								break;
+						}
+					}
+
+					break;
+
+				case pieces.King:
+					var directions = [north(row, column), northeast(row, column), east(row, column), southeast(row, column), south(row, column), southwest(row, column), west(row, column), northwest(row, column)];
+
+					for (var d = 0; d < directions.length; d++) {
+						var positions = directions[d];
+
+						for (var p = 0; p < positions.length; p++) {
+							var destination = game.board[positions[p].row][positions[p].column];
+
+							if (destination == undefined ||
+								destination.color != position.color)
+								moves.push({ currentRow: row, currentColumn: column, row: positions[p].row, column: positions[p].column });
+
+							break;
+						}
+					}
+
+					break;
 			}
 		}
 	}
@@ -284,4 +321,3 @@ function northwest(row, column) {
 
 	return destinations;
 }
-

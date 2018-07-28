@@ -1,0 +1,241 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+	<meta charset="utf-8" />
+	<script src="Scripts/jquery-3.3.1.js"></script>
+	<script src="chess.js"></script>
+	<link href="Content/bootstrap.css" rel="stylesheet" />
+	<style>
+		.black {
+			background-color: #888888;
+		}
+
+		.white {
+			background-color: #ffffff;
+		}
+
+		.selected {
+			background-color: #ffd800;
+		}
+
+		.col {
+			width: 64px;
+			height: 64px;
+		}
+
+		.container {
+			width: 512px;
+		}
+	</style>
+</head>
+<body>
+	<div class="container">
+		<div class='row'>
+			<div class='col white'>
+			</div>
+			<div class='col black'>
+			</div>
+			<div class='col white'>
+			</div>
+			<div class='col black'>
+			</div>
+			<div class='col white'>
+			</div>
+			<div class='col black'>
+			</div>
+			<div class='col white'>
+			</div>
+			<div class='col black'>
+			</div>
+		</div>
+		<div class='row'>
+			<div class='col black'>
+			</div>
+			<div class='col white'>
+			</div>
+			<div class='col black'>
+			</div>
+			<div class='col white'>
+			</div>
+			<div class='col black'>
+			</div>
+			<div class='col white'>
+			</div>
+			<div class='col black'>
+			</div>
+			<div class='col white'>
+			</div>
+		</div>
+		<div class='row'>
+			<div class='col white'>
+			</div>
+			<div class='col black'>
+			</div>
+			<div class='col white'>
+			</div>
+			<div class='col black'>
+			</div>
+			<div class='col white'>
+			</div>
+			<div class='col black'>
+			</div>
+			<div class='col white'>
+			</div>
+			<div class='col black'>
+			</div>
+		</div>
+		<div class='row'>
+			<div class='col black'>
+			</div>
+			<div class='col white'>
+			</div>
+			<div class='col black'>
+			</div>
+			<div class='col white'>
+			</div>
+			<div class='col black'>
+			</div>
+			<div class='col white'>
+			</div>
+			<div class='col black'>
+			</div>
+			<div class='col white'>
+			</div>
+		</div>
+		<div class='row'>
+			<div class='col white'>
+			</div>
+			<div class='col black'>
+			</div>
+			<div class='col white'>
+			</div>
+			<div class='col black'>
+			</div>
+			<div class='col white'>
+			</div>
+			<div class='col black'>
+			</div>
+			<div class='col white'>
+			</div>
+			<div class='col black'>
+			</div>
+		</div>
+		<div class='row'>
+			<div class='col black'>
+			</div>
+			<div class='col white'>
+			</div>
+			<div class='col black'>
+			</div>
+			<div class='col white'>
+			</div>
+			<div class='col black'>
+			</div>
+			<div class='col white'>
+			</div>
+			<div class='col black'>
+			</div>
+			<div class='col white'>
+			</div>
+		</div>
+		<div class='row'>
+			<div class='col white'>
+			</div>
+			<div class='col black'>
+			</div>
+			<div class='col white'>
+			</div>
+			<div class='col black'>
+			</div>
+			<div class='col white'>
+			</div>
+			<div class='col black'>
+			</div>
+			<div class='col white'>
+			</div>
+			<div class='col black'>
+			</div>
+		</div>
+		<div class='row'>
+			<div class='col black'>
+			</div>
+			<div class='col white'>
+			</div>
+			<div class='col black'>
+			</div>
+			<div class='col white'>
+			</div>
+			<div class='col black'>
+			</div>
+			<div class='col white'>
+			</div>
+			<div class='col black'>
+			</div>
+			<div class='col white'>
+			</div>
+		</div>
+	</div>
+	<script>
+		var game;
+		var selected;
+
+		var markers = Object.freeze(['P', 'R', 'N', 'B', 'Q', 'K']);
+		var styles = Object.freeze(['#000000', '#ffffff']);
+
+		$(document).ready(function () {
+			$('.col').click(onClick);
+
+			game = createGame();
+
+			update(game);
+		});
+
+		function update(game) {
+			for (var row = 0; row < 8; row++) {
+				for (var column = 0; column < 8; column++) {
+					if (game.board[row][column] == undefined)
+						$('.row').eq(row).children('.col').eq(column).empty();
+					else
+						$('.row').eq(row).children('.col').eq(column).text(markers[game.board[row][column].piece]);
+				}
+			}
+		}
+
+		function onClick() {
+			var div = $(this);
+
+			var column = div.index();
+			var row = $('.container').children('.row').index(div.parent());
+
+			if (selected == undefined) {
+				selected = { row: row, column: column };
+
+				div.addClass('selected');
+			}
+			else {
+				for (var move = 0; move < game.moves.length; move++) {
+					if (game.moves[move].currentRow == selected.row &&
+						game.moves[move].currentColumn == selected.column &&
+						game.moves[move].row == row &&
+						game.moves[move].column == column) {
+						execute(game, game.moves[move]);
+
+						update(game);
+
+						selected = undefined;
+
+						$('.col').removeClass('selected');
+
+						return;
+					}
+				}
+
+				selected = undefined;
+
+				$('.col').removeClass('selected');
+			}
+		}
+	</script>
+</body>
+</html>

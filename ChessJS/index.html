@@ -23,11 +23,85 @@
 		.col {
 			width: 64px;
 			height: 64px;
+			padding: 0px;
 		}
 
 		.container {
 			width: 512px;
 			margin-top: 200px;
+			margin-bottom: 200px;
+		}
+
+		.king.dark {
+			background-image: url(Chess_kdt60.png);
+			width: 64px;
+			height: 64px;
+		}
+
+		.king.light {
+			background-image: url(Chess_klt60.png);
+			width: 64px;
+			height: 64px;
+		}
+
+		.queen.dark {
+			background-image: url(Chess_qdt60.png);
+			width: 64px;
+			height: 64px;
+		}
+
+		.queen.light {
+			background-image: url(Chess_qlt60.png);
+			width: 64px;
+			height: 64px;
+		}
+
+		.bishop.dark {
+			background-image: url(Chess_bdt60.png);
+			width: 64px;
+			height: 64px;
+		}
+
+		.bishop.light {
+			background-image: url(Chess_blt60.png);
+			width: 64px;
+			height: 64px;
+		}
+
+		.knight.dark {
+			background-image: url(Chess_ndt60.png);
+			width: 64px;
+			height: 64px;
+		}
+
+		.knight.light {
+			background-image: url(Chess_nlt60.png);
+			width: 64px;
+			height: 64px;
+		}
+
+		.rook.dark {
+			background-image: url(Chess_rdt60.png);
+			width: 64px;
+			height: 64px;
+		}
+
+		.rook.light {
+			background-image: url(Chess_rlt60.png);
+			width: 64px;
+			height: 64px;
+		}
+
+		.pawn.dark {
+			background-image: url(Chess_pdt60.png);
+			width: 64px;
+			height: 64px;
+		}
+
+		.pawn.light {
+			background-image: url(Chess_plt60.png);
+			width: 64px;
+			height: 64px;
 		}
 	</style>
 </head>
@@ -178,6 +252,11 @@
 			</div>
 		</div>
 	</div>
+
+	<div>
+		Icons By Wikipedia user: Cburnett - <a class="external free" href="https://commons.wikimedia.org/wiki/Category:PNG_chess_pieces/Standard_transparent">https://commons.wikimedia.org/wiki/Category:PNG_chess_pieces/Standard_transparent</a>, <a title="Creative Commons Attribution-Share Alike 3.0" href="https://creativecommons.org/licenses/by-sa/3.0">CC BY-SA 3.0</a>, <a href="https://commons.wikimedia.org/w/index.php?curid=55002446">Link</a>
+	</div>
+
 	<script>
 		var game;
 		var selected;
@@ -186,6 +265,7 @@
 		var markers = Object.freeze(['P', 'R', 'N', 'B', 'Q', 'K']);
 		var icons = Object.freeze(["pawn", "rook", "knight", "bishop", "queen", "king"]);
 		var styles = Object.freeze(['#000000', '#ffffff']);
+		var classes = Object.freeze(['dark', 'light']);
 
 		$(document).ready(function () {
 			$('.col').click(onClick);
@@ -198,11 +278,20 @@
 		function update(game) {
 			for (var row = 0; row < 8; row++) {
 				for (var column = 0; column < 8; column++) {
-					if (game.board[row][column] == undefined)
-						$('.row').eq(row).children('.col').eq(column).empty();
+					var position = $('.row').eq(row).children('.col').eq(column);
+
+					if (game.board[row][column] == undefined) {
+						position.empty();
+					}
 					else {
-						$('.row').eq(row).children('.col').eq(column).text(markers[game.board[row][column].piece]);
-						$('.row').eq(row).children('.col').eq(column).css("color", game.board[row][column].color == 0 ? "black" : "white");
+						position.empty();
+						position.append('<div class="' + icons[game.board[row][column].piece] + ' ' + classes[game.board[row][column].color] + '"/>');
+
+						//$('.row').eq(row).children('.col').eq(column).text(markers[game.board[row][column].piece]);
+						//position.addClass(icons[game.board[row][column].piece]);
+						//position.addClass(classes[game.board[row][column].color]);
+
+						//$('.row').eq(row).children('.col').eq(column).css("color", game.board[row][column].color == 0 ? "black" : "white");
 					}
 				}
 			}

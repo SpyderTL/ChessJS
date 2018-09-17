@@ -47,6 +47,21 @@ function createGame() {
 	return game;
 }
 
+function copy(game) {
+	var board = [[], [], [], [], [], [], [], []];
+
+	for (var row = 0; row < 8; row++) {
+		for (var column = 0; column < 8; column++) {
+			var position = game.board[row, column];
+
+			if (position != undefined)
+				board[row][column] = { color: position.color, piece: position.piece };
+		}
+	}
+
+	return { board: board, turn: game.turn };
+}
+
 function execute(game, move) {
 	var position = game.board[move.currentRow][move.currentColumn];
 
@@ -116,9 +131,12 @@ function getMoves(game) {
 						for (var p = 0; p < positions.length; p++) {
 							var destination = game.board[positions[p].row][positions[p].column];
 
-							if (destination == undefined ||
-								destination.color != position.color)
+							if (destination == undefined)
 								moves.push({ currentRow: row, currentColumn: column, row: positions[p].row, column: positions[p].column });
+							else if (destination.color != position.color) {
+								moves.push({ currentRow: row, currentColumn: column, row: positions[p].row, column: positions[p].column });
+								break;
+							}
 							else
 								break;
 						}
@@ -148,9 +166,12 @@ function getMoves(game) {
 						for (var p = 0; p < positions.length; p++) {
 							var destination = game.board[positions[p].row][positions[p].column];
 
-							if (destination == undefined ||
-								destination.color != position.color)
+							if (destination == undefined)
 								moves.push({ currentRow: row, currentColumn: column, row: positions[p].row, column: positions[p].column });
+							else if (destination.color != position.color) {
+								moves.push({ currentRow: row, currentColumn: column, row: positions[p].row, column: positions[p].column });
+								break;
+							}
 							else
 								break;
 						}
@@ -167,9 +188,12 @@ function getMoves(game) {
 						for (var p = 0; p < positions.length; p++) {
 							var destination = game.board[positions[p].row][positions[p].column];
 
-							if (destination == undefined ||
-								destination.color != position.color)
+							if (destination == undefined)
 								moves.push({ currentRow: row, currentColumn: column, row: positions[p].row, column: positions[p].column });
+							else if (destination.color != position.color) {
+								moves.push({ currentRow: row, currentColumn: column, row: positions[p].row, column: positions[p].column });
+								break;
+							}
 							else
 								break;
 						}
@@ -320,4 +344,26 @@ function northwest(row, column) {
 	}
 
 	return destinations;
+}
+
+function boa(game) {
+	var best = 0;
+	var bestScore = -1000;
+
+	for (var move = 0; move < game.moves.length; move++) {
+		var projection = copy(game);
+
+		execute(projection, game.moves[move]);
+
+		var score = 0;
+
+		score -= projection.moves.length;
+
+		if (score > bestScore) {
+			score = bestScore;
+			best = move;
+		}
+	}
+
+	return best;
 }

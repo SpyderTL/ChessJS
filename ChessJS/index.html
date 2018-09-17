@@ -179,6 +179,7 @@
 	<script>
 		var game;
 		var selected;
+		var ai = [boa, undefined];
 
 		var markers = Object.freeze(['P', 'R', 'N', 'B', 'Q', 'K']);
 		var styles = Object.freeze(['#000000', '#ffffff']);
@@ -226,6 +227,11 @@
 						selected = undefined;
 
 						$('.col').removeClass('selected');
+
+						if (ai[game.turn] != undefined) {
+							execute(game, game.moves[ai[game.turn](game)]);
+							update(game);
+						}
 
 						return;
 					}

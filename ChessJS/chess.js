@@ -42,7 +42,7 @@ function createGame() {
 
 	var game = { board: board, turn: colors.White };
 
-	game.moves = getMoves(game);
+	game.moves = getMoves(game, 0);
 
 	return game;
 }
@@ -52,7 +52,7 @@ function copy(game) {
 
 	for (var row = 0; row < 8; row++) {
 		for (var column = 0; column < 8; column++) {
-			var position = game.board[row, column];
+			var position = game.board[row][column]
 
 			if (position != undefined)
 				board[row][column] = { color: position.color, piece: position.piece };
@@ -62,7 +62,7 @@ function copy(game) {
 	return { board: board, turn: game.turn };
 }
 
-function execute(game, move) {
+function execute(game, move, depth) {
 	var position = game.board[move.currentRow][move.currentColumn];
 
 	game.board[move.currentRow][move.currentColumn] = undefined;
@@ -76,10 +76,10 @@ function execute(game, move) {
 	game.board[move.row][move.column] = position;
 
 	game.turn = game.turn == colors.White ? colors.Black : colors.White;
-	game.moves = getMoves(game);
+	game.moves = getMoves(game, depth);
 }
 
-function getMoves(game) {
+function getMoves(game, depth) {
 	var moves = [];
 
 	for (var row = 0; row < 8; row++) {
@@ -100,10 +100,12 @@ function getMoves(game) {
 								moves.push({ currentRow: row, currentColumn: column, row: row - 2, column: column });
 						}
 
-						if (game.board[row - 1][column + 1] != undefined)
+						if (game.board[row - 1][column + 1] != undefined &&
+							game.board[row - 1][column + 1].color != position.color)
 							moves.push({ currentRow: row, currentColumn: column, row: row - 1, column: column + 1 });
 
-						if (game.board[row - 1][column - 1] != undefined)
+						if (game.board[row - 1][column - 1] != undefined &&
+							game.board[row - 1][column - 1].color != position.color)
 							moves.push({ currentRow: row, currentColumn: column, row: row - 1, column: column - 1 });
 					}
 					else {
@@ -114,10 +116,12 @@ function getMoves(game) {
 								moves.push({ currentRow: row, currentColumn: column, row: row + 2, column: column });
 						}
 
-						if (game.board[row + 1][column + 1] != undefined)
+						if (game.board[row + 1][column + 1] != undefined &&
+							game.board[row + 1][column + 1].color != position.color)
 							moves.push({ currentRow: row, currentColumn: column, row: row + 1, column: column + 1 });
 
-						if (game.board[row + 1][column - 1] != undefined)
+						if (game.board[row + 1][column - 1] != undefined &&
+							game.board[row + 1][column - 1].color != position.color)
 							moves.push({ currentRow: row, currentColumn: column, row: row + 1, column: column - 1 });
 					}
 					break;
@@ -223,7 +227,32 @@ function getMoves(game) {
 		}
 	}
 
-	return moves;
+	if (depth == 0)
+		return moves;
+
+	var validMoves = [];
+
+	for (var move = 0; move < moves.length; move++) {
+		var valid = true;
+		var projection = copy(game);
+
+		execute(projection, moves[move], depth - 1);
+
+		for (var move2 = 0; move2 < projection.moves.length; move2++) {
+			var target = projection.board[projection.moves[move2].row][projection.moves[move2].column];
+
+			if (target != undefined &&
+				target.piece == pieces.King) {
+				valid = false;
+				break;
+			}
+		}
+
+		if (valid)
+			validMoves.push(moves[move]);
+	}
+
+	return validMoves;
 }
 
 function knight(row, column) {
@@ -348,19 +377,30 @@ function northwest(row, column) {
 
 function boa(game) {
 	var best = 0;
-	var bestScore = -1000;
+	var bestScore = -10000;
 
 	for (var move = 0; move < game.moves.length; move++) {
 		var projection = copy(game);
 
-		execute(projection, game.moves[move]);
+		execute(projection, game.moves[move], 1);
 
 		var score = 0;
 
 		score -= projection.moves.length;
 
+		for (var row = 0; row < 8; row++) {
+			for (var column = 0; column < 8; column++) {
+				var position = projection.board[row][column];
+
+				if (position == undefined)
+					continue;
+				else if (position.color != game.turn)
+					score -= (position.piece + 5);
+			}
+		}
+
 		if (score > bestScore) {
-			score = bestScore;
+			bestScore = score;
 			best = move;
 		}
 	}

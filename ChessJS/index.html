@@ -6,13 +6,14 @@
 	<script src="Scripts/jquery-3.3.1.js"></script>
 	<script src="chess.js"></script>
 	<link href="Content/bootstrap.css" rel="stylesheet" />
+
 	<style>
 		.black {
 			background-color: #888888;
 		}
 
 		.white {
-			background-color: #ffffff;
+			background-color: #cccccc;
 		}
 
 		.selected {
@@ -26,6 +27,7 @@
 
 		.container {
 			width: 512px;
+			margin-top: 200px;
 		}
 	</style>
 </head>
@@ -182,6 +184,7 @@
 		var ai = [boa, undefined];
 
 		var markers = Object.freeze(['P', 'R', 'N', 'B', 'Q', 'K']);
+		var icons = Object.freeze(["pawn", "rook", "knight", "bishop", "queen", "king"]);
 		var styles = Object.freeze(['#000000', '#ffffff']);
 
 		$(document).ready(function () {
@@ -197,8 +200,10 @@
 				for (var column = 0; column < 8; column++) {
 					if (game.board[row][column] == undefined)
 						$('.row').eq(row).children('.col').eq(column).empty();
-					else
+					else {
 						$('.row').eq(row).children('.col').eq(column).text(markers[game.board[row][column].piece]);
+						$('.row').eq(row).children('.col').eq(column).css("color", game.board[row][column].color == 0 ? "black" : "white");
+					}
 				}
 			}
 		}
@@ -220,7 +225,7 @@
 						game.moves[move].currentColumn == selected.column &&
 						game.moves[move].row == row &&
 						game.moves[move].column == column) {
-						execute(game, game.moves[move]);
+						execute(game, game.moves[move], 1);
 
 						update(game);
 
@@ -229,7 +234,7 @@
 						$('.col').removeClass('selected');
 
 						if (ai[game.turn] != undefined) {
-							execute(game, game.moves[ai[game.turn](game)]);
+							execute(game, game.moves[ai[game.turn](game)], 1);
 							update(game);
 						}
 

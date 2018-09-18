@@ -81,10 +81,10 @@ function execute(game, move, depth) {
 
 	game.board[move.row][move.column] = position;
 
+	game.lastMove = move;
+
 	game.turn = game.turn == colors.White ? colors.Black : colors.White;
 	game.moves = getMoves(game, depth);
-
-	game.lastMove = move;
 }
 
 function getMoves(game, depth) {
@@ -116,23 +116,20 @@ function getMoves(game, depth) {
 							game.board[row - 1][column - 1].color != position.color)
 							moves.push({ currentRow: row, currentColumn: column, row: row - 1, column: column - 1 });
 
-						if (game.lastMove != undefined) {
-							if (game.board[row][column + 1] != undefined) {
-								if (game.board[row][column + 1].piece == pieces.Pawn &&
-									game.lastMove.row == row &&
-									game.lastMove.column == column + 1 &&
-									game.lastMove.currentRow == row - 2)
-									moves.push({ currentRow: row, currentColumn: column, row: row - 1, column: column + 1 });
-							}
+						if (game.lastMove != undefined &&
+							game.board[row][column + 1] != undefined &&
+							game.board[row][column + 1].piece == pieces.Pawn &&
+							game.lastMove.row == row &&
+							game.lastMove.column == column + 1 &&
+							game.lastMove.currentRow == row - 2)
+							moves.push({ currentRow: row, currentColumn: column, row: row - 1, column: column + 1 });
 
-							if (game.board[row][column - 1] != undefined) {
-								if (game.board[row][column - 1].piece == pieces.Pawn &&
-									game.lastMove.row == row &&
-									game.lastMove.column == column - 1 &&
-									game.lastMove.currentRow == row - 2)
-									moves.push({ currentRow: row, currentColumn: column, row: row - 1, column: column - 1 });
-							}
-						}
+						if (game.board[row][column - 1] != undefined &&
+							game.board[row][column - 1].piece == pieces.Pawn &&
+							game.lastMove.row == row &&
+							game.lastMove.column == column - 1 &&
+							game.lastMove.currentRow == row - 2)
+							moves.push({ currentRow: row, currentColumn: column, row: row - 1, column: column - 1 });
 					}
 					else {
 						if (game.board[row + 1][column] == undefined) {

@@ -4,41 +4,41 @@ var pieces = Object.freeze({ Pawn: 0, Rook: 1, Knight: 2, Bishop: 3, Queen: 4, K
 function createGame() {
 	var board = [[], [], [], [], [], [], [], []];
 
-	board[0][0] = { color: colors.Black, piece: pieces.Rook };
-	board[0][1] = { color: colors.Black, piece: pieces.Knight };
-	board[0][2] = { color: colors.Black, piece: pieces.Bishop };
-	board[0][3] = { color: colors.Black, piece: pieces.Queen };
-	board[0][4] = { color: colors.Black, piece: pieces.King };
-	board[0][5] = { color: colors.Black, piece: pieces.Bishop };
-	board[0][6] = { color: colors.Black, piece: pieces.Knight };
-	board[0][7] = { color: colors.Black, piece: pieces.Rook };
+	board[0][0] = { color: colors.Black, moves: 0, piece: pieces.Rook };
+	board[0][1] = { color: colors.Black, moves: 0, piece: pieces.Knight };
+	board[0][2] = { color: colors.Black, moves: 0, piece: pieces.Bishop };
+	board[0][3] = { color: colors.Black, moves: 0, piece: pieces.Queen };
+	board[0][4] = { color: colors.Black, moves: 0, piece: pieces.King };
+	board[0][5] = { color: colors.Black, moves: 0, piece: pieces.Bishop };
+	board[0][6] = { color: colors.Black, moves: 0, piece: pieces.Knight };
+	board[0][7] = { color: colors.Black, moves: 0, piece: pieces.Rook };
 
-	board[1][0] = { color: colors.Black, piece: pieces.Pawn };
-	board[1][1] = { color: colors.Black, piece: pieces.Pawn };
-	board[1][2] = { color: colors.Black, piece: pieces.Pawn };
-	board[1][3] = { color: colors.Black, piece: pieces.Pawn };
-	board[1][4] = { color: colors.Black, piece: pieces.Pawn };
-	board[1][5] = { color: colors.Black, piece: pieces.Pawn };
-	board[1][6] = { color: colors.Black, piece: pieces.Pawn };
-	board[1][7] = { color: colors.Black, piece: pieces.Pawn };
+	board[1][0] = { color: colors.Black, moves: 0, piece: pieces.Pawn };
+	board[1][1] = { color: colors.Black, moves: 0, piece: pieces.Pawn };
+	board[1][2] = { color: colors.Black, moves: 0, piece: pieces.Pawn };
+	board[1][3] = { color: colors.Black, moves: 0, piece: pieces.Pawn };
+	board[1][4] = { color: colors.Black, moves: 0, piece: pieces.Pawn };
+	board[1][5] = { color: colors.Black, moves: 0, piece: pieces.Pawn };
+	board[1][6] = { color: colors.Black, moves: 0, piece: pieces.Pawn };
+	board[1][7] = { color: colors.Black, moves: 0, piece: pieces.Pawn };
 
-	board[6][0] = { color: colors.White, piece: pieces.Pawn };
-	board[6][1] = { color: colors.White, piece: pieces.Pawn };
-	board[6][2] = { color: colors.White, piece: pieces.Pawn };
-	board[6][3] = { color: colors.White, piece: pieces.Pawn };
-	board[6][4] = { color: colors.White, piece: pieces.Pawn };
-	board[6][5] = { color: colors.White, piece: pieces.Pawn };
-	board[6][6] = { color: colors.White, piece: pieces.Pawn };
-	board[6][7] = { color: colors.White, piece: pieces.Pawn };
+	board[6][0] = { color: colors.White, moves: 0, piece: pieces.Pawn };
+	board[6][1] = { color: colors.White, moves: 0, piece: pieces.Pawn };
+	board[6][2] = { color: colors.White, moves: 0, piece: pieces.Pawn };
+	board[6][3] = { color: colors.White, moves: 0, piece: pieces.Pawn };
+	board[6][4] = { color: colors.White, moves: 0, piece: pieces.Pawn };
+	board[6][5] = { color: colors.White, moves: 0, piece: pieces.Pawn };
+	board[6][6] = { color: colors.White, moves: 0, piece: pieces.Pawn };
+	board[6][7] = { color: colors.White, moves: 0, piece: pieces.Pawn };
 
-	board[7][0] = { color: colors.White, piece: pieces.Rook };
-	board[7][1] = { color: colors.White, piece: pieces.Knight };
-	board[7][2] = { color: colors.White, piece: pieces.Bishop };
-	board[7][3] = { color: colors.White, piece: pieces.Queen };
-	board[7][4] = { color: colors.White, piece: pieces.King };
-	board[7][5] = { color: colors.White, piece: pieces.Bishop };
-	board[7][6] = { color: colors.White, piece: pieces.Knight };
-	board[7][7] = { color: colors.White, piece: pieces.Rook };
+	board[7][0] = { color: colors.White, moves: 0, piece: pieces.Rook };
+	board[7][1] = { color: colors.White, moves: 0, piece: pieces.Knight };
+	board[7][2] = { color: colors.White, moves: 0, piece: pieces.Bishop };
+	board[7][3] = { color: colors.White, moves: 0, piece: pieces.Queen };
+	board[7][4] = { color: colors.White, moves: 0, piece: pieces.King };
+	board[7][5] = { color: colors.White, moves: 0, piece: pieces.Bishop };
+	board[7][6] = { color: colors.White, moves: 0, piece: pieces.Knight };
+	board[7][7] = { color: colors.White, moves: 0, piece: pieces.Rook };
 
 	var game = { board: board, turn: colors.White };
 
@@ -55,7 +55,7 @@ function copy(game) {
 			var position = game.board[row][column]
 
 			if (position != undefined)
-				board[row][column] = { color: position.color, piece: position.piece };
+				board[row][column] = { color: position.color, moves: position.moves, piece: position.piece };
 		}
 	}
 
@@ -78,6 +78,8 @@ function execute(game, move, depth) {
 			game.board[move.currentRow][move.column] = undefined;
 		}
 	}
+
+	position.moves++;
 
 	game.board[move.row][move.column] = position;
 
@@ -116,20 +118,21 @@ function getMoves(game, depth) {
 							game.board[row - 1][column - 1].color != position.color)
 							moves.push({ currentRow: row, currentColumn: column, row: row - 1, column: column - 1 });
 
-						if (game.lastMove != undefined &&
-							game.board[row][column + 1] != undefined &&
-							game.board[row][column + 1].piece == pieces.Pawn &&
-							game.lastMove.row == row &&
-							game.lastMove.column == column + 1 &&
-							game.lastMove.currentRow == row - 2)
-							moves.push({ currentRow: row, currentColumn: column, row: row - 1, column: column + 1 });
+						if (game.lastMove != undefined) {
+							if (game.board[row][column + 1] != undefined &&
+								game.board[row][column + 1].piece == pieces.Pawn &&
+								game.lastMove.row == row &&
+								game.lastMove.column == column + 1 &&
+								game.lastMove.currentRow == row - 2)
+								moves.push({ currentRow: row, currentColumn: column, row: row - 1, column: column + 1 });
 
-						if (game.board[row][column - 1] != undefined &&
-							game.board[row][column - 1].piece == pieces.Pawn &&
-							game.lastMove.row == row &&
-							game.lastMove.column == column - 1 &&
-							game.lastMove.currentRow == row - 2)
-							moves.push({ currentRow: row, currentColumn: column, row: row - 1, column: column - 1 });
+							if (game.board[row][column - 1] != undefined &&
+								game.board[row][column - 1].piece == pieces.Pawn &&
+								game.lastMove.row == row &&
+								game.lastMove.column == column - 1 &&
+								game.lastMove.currentRow == row - 2)
+								moves.push({ currentRow: row, currentColumn: column, row: row - 1, column: column - 1 });
+						}
 					}
 					else {
 						if (game.board[row + 1][column] == undefined) {

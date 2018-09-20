@@ -68,6 +68,7 @@ function execute(game, move, depth) {
 	game.board[move.currentRow][move.currentColumn] = undefined;
 
 	if (position.piece == pieces.Pawn) {
+		// Queen
 		if (move.row == 0 ||
 			move.row == 7)
 			position.piece = pieces.Queen;
@@ -76,6 +77,25 @@ function execute(game, move, depth) {
 		if (move.column != move.currentColumn &&
 			game.board[move.row][move.column] == undefined) {
 			game.board[move.currentRow][move.column] = undefined;
+		}
+	}
+
+	if (position.piece == pieces.King) {
+		// Castle
+		if (move.column == move.currentColumn + 2) {
+			var castle = game.board[move.row][7];
+
+			game.board[move.row][7] = undefined;
+
+			game.board[move.row][move.column - 1] = castle;
+		}
+
+		if (move.column == move.currentColumn - 2) {
+			var castle = game.board[move.row][0];
+
+			game.board[move.row][0] = undefined;
+
+			game.board[move.row][move.column + 1] = castle;
 		}
 	}
 
@@ -262,6 +282,22 @@ function getMoves(game, depth) {
 
 							break;
 						}
+					}
+
+					if (position.moves == 0) {
+						if (game.board[row][0] != undefined &&
+							game.board[row][0].moves == 0 &&
+							game.board[row][1] == undefined &&
+							game.board[row][2] == undefined &&
+							(column == 3 || game.board[row][3] == undefined))
+							moves.push({ currentRow: row, currentColumn: column, row: row, column: column - 2 });
+
+						if (game.board[row][7] != undefined &&
+							game.board[row][7].moves == 0 &&
+							game.board[row][6] == undefined &&
+							game.board[row][5] == undefined &&
+							(column == 4 || game.board[row][4] == undefined))
+							moves.push({ currentRow: row, currentColumn: column, row: row, column: column + 2 });
 					}
 
 					break;
